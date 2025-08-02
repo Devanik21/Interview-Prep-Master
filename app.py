@@ -4,6 +4,10 @@ import random
 import json
 from datetime import datetime
 import time
+# Add these lines after line 7
+import markdown2
+import weasyprint
+from base64 import b64encode
 
 # Configure page
 st.set_page_config(
@@ -404,6 +408,93 @@ QUESTION_TYPES = [
 
 DIFFICULTY_LEVELS = ["Beginner", "Intermediate", "Advanced", "Expert"]
 
+# Place this entire block after the DIFFICULTY_LEVELS list (around line 433)
+
+# CSS for styling the PDF report to make it look professional and colored
+PDF_CSS = """
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+body {
+    font-family: 'Roboto', 'Helvetica', sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+h1, h2, h3 {
+    color: #0d47a1; /* Dark Blue */
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 8px;
+    margin-top: 24px;
+}
+h1 { font-size: 28px; }
+h2 { font-size: 22px; }
+h3 { font-size: 18px; }
+strong {
+    color: #c62828; /* Dark Red */
+}
+pre {
+    background-color: #282c34; /* Dark background for code blocks */
+    color: #abb2bf; /* Light text for code */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 14px;
+}
+code {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #f0f0f0;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+pre > code {
+    background-color: transparent;
+    padding: 0;
+}
+ul {
+    padding-left: 20px;
+}
+li {
+    margin-bottom: 8px;
+}
+"""
+
+def create_pdf_report(questions, role_or_exam, is_exam):
+    """Generates a styled PDF report from the list of questions."""
+    report_title = "Certification Exam Prep" if is_exam else "Interview Prep"
+    
+    # Start building the markdown content
+    markdown_content = f"# {report_title}: {role_or_exam}\n"
+    
+    for i, q in enumerate(questions, 1):
+        question_type_emoji = "📜" if q.get('context') == 'exam' else "🎤"
+        markdown_content += f"## {question_type_emoji} Question {i}: {q['topic']}\n"
+        markdown_content += f"**Type:** {q['type']} | **Difficulty:** {q['difficulty']}\n\n"
+        markdown_content += f"{q['question']}\n\n"
+        markdown_content += "---\n\n"
+        
+    # Convert markdown to styled HTML
+    html_body = markdown2.markdown(markdown_content, extras=["fenced-code-blocks", "code-friendly"])
+    
+    html_string = f"""
+    <html>
+        <head>
+            <style>{PDF_CSS}</style>
+        </head>
+        <body>
+            {html_body}
+        </body>
+    </html>
+    """
+    
+    # Generate PDF from HTML
+    pdf_bytes = weasyprint.HTML(string=html_string).write_pdf()
+    return pdf_bytes
+
+def get_pdf_download_link(pdf_bytes, filename="CrackAnyJob_Prep_Report.pdf"):
+    """Generates a download link for the PDF."""
+    b64_pdf = b64encode(pdf_bytes).decode()
+    return f'<a href="data:application/pdf;base64,{b64_pdf}" download="{filename}" style="float: right; background-color: #4CAF50; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; border-radius: 5px;">📥 Download PDF Report</a>'
+
 def initialize_session_state():
     if 'current_questions' not in st.session_state:
         st.session_state.current_questions = []
@@ -595,7 +686,7 @@ def main():
     # Main content
     col1, col2 = st.columns([2, 1])
     
-    with col1:
+        with col1:
         if is_exam_mode:
             st.header(f"📜 Exam Prep: {selected_item}")
             exam_info = FAMOUS_EXAMS[selected_item]["exam_info"]
@@ -648,6 +739,32 @@ def main():
                     with col_c:
                         if st.button(f"Mastered", key=f"master_{i}"):
                             st.success("Great job! 🎉")
+        
+        # Place this code inside the `with col1:` block, after the question display loop (around line 635)
+
+            # --- PDF Export Section ---
+            if st.session_state.current_questions:
+                st.markdown("---")
+                st.subheader("📄 Export Report")
+                st.write("Click the button below to generate a colored PDF of the questions above.")
+                
+                if st.button("Generate and Download PDF", type="primary"):
+                    with st.spinner("🎨 Creating your styled PDF report..."):
+                        is_exam = st.session_state.get('is_exam_mode', False)
+                        role_or_exam = st.session_state.current_role
+                        
+                        pdf_data = create_pdf_report(st.session_state.current_questions, role_or_exam, is_exam)
+                        
+                        # Generate a clean filename
+                        filename = "".join(c for c in role_or_exam if c.isalnum() or c in (' ', '_')).rstrip()
+                        filename = f"CrackAnyJob_{filename.replace(' ', '_')}_Prep.pdf"
+
+                        # Create and display the download link
+                        download_link = get_pdf_download_link(pdf_data, filename)
+                        st.markdown(download_link, unsafe_allow_html=True)
+                        st.success("Your PDF is ready for download! Check the link above.")                    
+
+    
     
     with col2:
         st.header("📊 Progress Tracker")
