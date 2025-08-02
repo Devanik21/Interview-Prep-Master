@@ -406,7 +406,7 @@ QUESTION_TYPES = [
     "Coding", "System Design", "Behavioral", "Scenario-based"
 ]
 
-DIFFICULTY_LEVELS = ["Beginner", "Intermediate", "Advanced", "Expert"]
+DIFFICULTY_LEVELS = ["Foundational: For building a solid base.", "Intermediate: For typical interview problems.", "Competitive (Hard): For challenging rounds at top companies."]
 
 
 # Place this entire block after the DIFFICULTY_LEVELS list (around line 433)
@@ -521,7 +521,8 @@ def generate_question(model, role, topic, question_type, difficulty):
     specifically focusing on {topic}.
     
     Requirements:
-    - Make the question challenging and industry-relevant
+    - Make the question industry-relevant but for undergraduate fresher level( example - bachelors degree ) and should be suitable for a final year student
+    - Ensure the question is clear 
     - Include follow-up questions if applicable
     - For coding questions, specify the programming language
     - For case studies, provide realistic scenarios
