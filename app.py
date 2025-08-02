@@ -829,7 +829,7 @@ def main():
             st.info(f"**Passing Score:** {exam_info['passing_score']}")
             
         else:
-            st.header(f"🚀 Interview Prep: {selected_item}")
+            st.header(f"♾️ Interview Prep: {selected_item}")
         
         # Generate questions button
         button_text = "🎲 Generate Certification Questions" if is_exam_mode else "🎲 Generate Interview Questions"
@@ -1019,7 +1019,7 @@ def main():
     
     # Footer
     st.markdown("---")
-    st.markdown("**CrackAnyJob** - Master your interview preparation with AI-powered questions 🚀")
+    st.markdown("**CrackAnyJob** - Master your interview preparation with AI-powered questions ♾️")
 
 if __name__ == "__main__":
     main()
