@@ -740,6 +740,26 @@ def main():
                     with col_c:
                         if st.button(f"Mastered", key=f"master_{i}"):
                             st.success("Great job! 🎉")
+            
+            # --- PDF Export Section ---
+            st.markdown("---")
+            st.subheader("📄 Export Report")
+            st.write("Click the button below to generate a colored PDF of the questions above.")
+            
+            if st.button("Generate and Download PDF", type="primary"):
+                with st.spinner("🎨 Creating your styled PDF report..."):
+                    is_exam = st.session_state.get('is_exam_mode', False)
+                    role_or_exam = st.session_state.current_role
+                    
+                    pdf_data = create_pdf_report(st.session_state.current_questions, role_or_exam, is_exam)
+                    
+                    # Generate a clean filename
+                    filename = "".join(c for c in role_or_exam if c.isalnum() or c in (' ', '_')).rstrip()
+                    filename = f"CrackAnyJob_{filename.replace(' ', '_')}_Prep.pdf"
+                    # Create and display the download link
+                    download_link = get_pdf_download_link(pdf_data, filename)
+                    st.markdown(download_link, unsafe_allow_html=True)
+                    st.success("Your PDF is ready for download! Check the link above.")
 
     
     with col2:
