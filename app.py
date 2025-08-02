@@ -408,6 +408,7 @@ QUESTION_TYPES = [
 
 DIFFICULTY_LEVELS = ["Beginner", "Intermediate", "Advanced", "Expert"]
 
+
 # Place this entire block after the DIFFICULTY_LEVELS list (around line 433)
 
 # CSS for styling the PDF report to make it look professional and colored
@@ -686,7 +687,7 @@ def main():
     # Main content
     col1, col2 = st.columns([2, 1])
     
-            with col1:
+    with col1:
         if is_exam_mode:
             st.header(f"📜 Exam Prep: {selected_item}")
             exam_info = FAMOUS_EXAMS[selected_item]["exam_info"]
@@ -694,7 +695,7 @@ def main():
             # Exam overview
             st.subheader("📋 Exam Overview")
             col_a, col_b, col_c = st.columns(3)
-    A        with col_a:
+            with col_a:
                 st.metric("Duration", exam_info['duration'])
             with col_b:
                 st.metric("Questions", exam_info['questions'])
@@ -739,32 +740,7 @@ def main():
                     with col_c:
                         if st.button(f"Mastered", key=f"master_{i}"):
                             st.success("Great job! 🎉")
-        
-        # Place this code inside the `with col1:` block, after the question display loop (around line 635)
 
-            # --- PDF Export Section ---
-            if st.session_state.current_questions:
-                st.markdown("---")
-                st.subheader("📄 Export Report")
-                st.write("Click the button below to generate a colored PDF of the questions above.")
-                
-                if st.button("Generate and Download PDF", type="primary"):
-                    with st.spinner("🎨 Creating your styled PDF report..."):
-                        is_exam = st.session_state.get('is_exam_mode', False)
-                        role_or_exam = st.session_state.current_role
-                        
-                        pdf_data = create_pdf_report(st.session_state.current_questions, role_or_exam, is_exam)
-                        
-                        # Generate a clean filename
-                        filename = "".join(c for c in role_or_exam if c.isalnum() or c in (' ', '_')).rstrip()
-                        filename = f"CrackAnyJob_{filename.replace(' ', '_')}_Prep.pdf"
-
-                        # Create and display the download link
-                        download_link = get_pdf_download_link(pdf_data, filename)
-                        st.markdown(download_link, unsafe_allow_html=True)
-                        st.success("Your PDF is ready for download! Check the link above.")                                 
-
-    
     
     with col2:
         st.header("📊 Progress Tracker")
