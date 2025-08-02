@@ -521,7 +521,12 @@ def generate_question(model, role, topic, question_type, difficulty):
     specifically focusing on {topic}.
     
     Requirements:
-    - Make the question industry-relevant but for undergraduate fresher level( example - bachelors degree ) and should be suitable for a final year student
+    -Foundational: Perfect for starting a topic and building a solid base without feeling overwhelmed.
+
+    -Intermediate: This is the sweet spot. The majority of questions asked in companies like TCS, Infosys, Wipro, and even product-based companies will fall into this category.
+
+    -Competitive (Hard): This is your target for top-tier companies (like FAANG, top startups) and challenging online assessment rounds.
+    - Make the question industry-relevant but for undergraduate fresher level( example - bachelors degree ) and should be suitable for a final year student.
     - Ensure the question is clear 
     - Include follow-up questions if applicable
     - For coding questions, specify the programming language
@@ -553,6 +558,11 @@ def generate_exam_question(model, exam_name, topic, difficulty):
     - Focus: Real-world application and practical knowledge
     
     Requirements:
+    -Foundational: Perfect for starting a topic and building a solid base without feeling overwhelmed.
+
+    -Intermediate: This is the sweet spot. The majority of questions asked in companies like TCS, Infosys, Wipro, and even product-based companies will fall into this category.
+
+    -Competitive (Hard): This is your target for top-tier companies (like FAANG, top startups) and challenging online assessment rounds.
     - Make the question realistic and exam-style
     - Include multiple choice options (A, B, C, D) if applicable
     - Add detailed explanation for the correct answer
