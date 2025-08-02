@@ -651,7 +651,12 @@ def main():
     st.sidebar.header("🎯 Preparation Mode")
     prep_mode = st.sidebar.selectbox(
         "Choose your preparation focus:",
-        ["🎤 Job Interview Prep", "📜 Certification Exam Prep"]
+        [
+            "🎤 Job Interview Prep", 
+            "📜 Certification Exam Prep",
+            "🎓 Academic Research Prep",
+            "🧠 Behavioral & Leadership Prep"
+        ]
     )
     
     # Dynamic selection based on mode
@@ -665,7 +670,7 @@ def main():
         for i, topic in enumerate(item_topics, 1):
             st.sidebar.text(f"{i}. {topic}")
             
-    else:  # Certification Exam Prep
+    elif prep_mode == "📜 Certification Exam Prep":
         st.sidebar.subheader("📜 Certification Selection")
         selected_item = st.sidebar.selectbox("Choose your target certification:", list(FAMOUS_EXAMS.keys()))
         item_topics = FAMOUS_EXAMS[selected_item]["topics"]
@@ -681,6 +686,72 @@ def main():
         st.sidebar.text(f"💰 Cost: {exam_info['cost']}")
         
         st.sidebar.subheader(f"📚 Exam Topics")
+        for i, topic in enumerate(item_topics, 1):
+            st.sidebar.text(f"{i}. {topic}")
+            
+    elif prep_mode == "🎓 Academic Research Prep":
+        st.sidebar.subheader("🔬 Research Area Selection")
+        research_areas = [
+            "Machine Learning & AI Research",
+            "Data Science & Analytics",
+            "Computer Vision",
+            "Natural Language Processing",
+            "Robotics & Autonomous Systems",
+            "Theoretical Computer Science",
+            "Human-Computer Interaction",
+            "Cybersecurity Research",
+            "Quantum Computing",
+            "Bioinformatics & Computational Biology"
+        ]
+        selected_item = st.sidebar.selectbox("Select your research area:", research_areas)
+        item_topics = [
+            "Literature Review & Survey",
+            "Research Methodology",
+            "Experimental Design",
+            "Data Collection & Analysis",
+            "Theoretical Frameworks",
+            "Algorithm Development",
+            "Result Validation",
+            "Paper Writing & Publication",
+            "Research Ethics",
+            "Collaboration & Peer Review"
+        ]
+        is_exam_mode = False
+        
+        st.sidebar.subheader(f"📚 Key Research Components")
+        for i, topic in enumerate(item_topics, 1):
+            st.sidebar.text(f"{i}. {topic}")
+            
+    else:  # Behavioral & Leadership Prep
+        st.sidebar.subheader("👔 Focus Area")
+        focus_areas = [
+            "Executive Leadership",
+            "Team Management",
+            "Conflict Resolution",
+            "Strategic Thinking",
+            "Emotional Intelligence",
+            "Change Management",
+            "Communication & Influence",
+            "Decision Making",
+            "Career Development",
+            "Workplace Culture"
+        ]
+        selected_item = st.sidebar.selectbox("Select your focus area:", focus_areas)
+        item_topics = [
+            "Leadership Principles",
+            "Team Building & Motivation",
+            "Difficult Conversations",
+            "Strategic Planning",
+            "Stakeholder Management",
+            "Performance Management",
+            "Coaching & Mentoring",
+            "Innovation & Creativity",
+            "Ethical Leadership",
+            "Crisis Management"
+        ]
+        is_exam_mode = False
+        
+        st.sidebar.subheader(f"📚 Core Competencies")
         for i, topic in enumerate(item_topics, 1):
             st.sidebar.text(f"{i}. {topic}")
     
