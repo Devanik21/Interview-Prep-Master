@@ -583,12 +583,34 @@ def generate_exam_question(model, exam_name, topic, difficulty):
     except Exception as e:
         return f"Error generating question: {str(e)}"
 
-def generate_comprehensive_question_set(model, role_or_exam, num_questions=10, is_exam=False):
+def generate_comprehensive_question_set(model, role_or_exam, num_questions=10, is_exam=False, prep_mode=None):
+    # Define topics and context based on preparation mode
     if is_exam:
         topics = FAMOUS_EXAMS[role_or_exam]["topics"]
         context = "exam"
-    else:
-        topics = JOB_ROLES[role_or_exam]["topics"]
+    elif prep_mode == "🎓 Academic Research Prep":
+        topics = [
+            "Literature Review & Survey", "Research Methodology", "Experimental Design",
+            "Data Collection & Analysis", "Theoretical Frameworks", "Algorithm Development",
+            "Result Validation", "Paper Writing & Publication", "Research Ethics",
+            "Collaboration & Peer Review"
+        ]
+        context = "academic_research"
+    elif prep_mode == "🧠 Behavioral & Leadership Prep":
+        topics = [
+            "Leadership Principles", "Team Building & Motivation", "Difficult Conversations",
+            "Strategic Planning", "Stakeholder Management", "Performance Management",
+            "Coaching & Mentoring", "Innovation & Creativity", "Ethical Leadership",
+            "Crisis Management"
+        ]
+        context = "behavioral_leadership"
+    else:  # Default to job interview prep
+        try:
+            topics = JOB_ROLES[role_or_exam]["topics"]
+        except KeyError:
+            # If role not found in JOB_ROLES, use a default set of topics
+            topics = ["General Knowledge", "Problem Solving", "Technical Skills", 
+                     "Industry Trends", "Case Studies", "Practical Applications"]
         context = "interview"
     
     questions = []
@@ -604,16 +626,35 @@ def generate_comprehensive_question_set(model, role_or_exam, num_questions=10, i
             question = generate_exam_question(model, role_or_exam, topic, difficulty)
             question_type = "Certification"
         else:
-            question_type = random.choice(QUESTION_TYPES)
-            status_text.text(f"Generating question {i+1}/{num_questions}: {topic} - {question_type}")
-            question = generate_question(model, role_or_exam, topic, question_type, difficulty)
+            if prep_mode in ["🎓 Academic Research Prep", "🧠 Behavioral & Leadership Prep"]:
+                # For academic and behavioral modes, use a simplified question type selection
+                question_types = {
+                    "🎓 Academic Research Prep": ["Research Question", "Methodology Design", 
+                                                "Literature Analysis", "Research Ethics", "Publication Strategy"],
+                    "🧠 Behavioral & Leadership Prep": ["Situational Analysis", "Behavioral Question", 
+                                                      "Case Study", "Self-Reflection", "Leadership Scenario"]
+                }
+                question_type = random.choice(question_types[prep_mode])
+            else:
+                question_type = random.choice(QUESTION_TYPES)
+                
+            status_text.text(f"Generating {prep_mode if prep_mode else 'question'} {i+1}/{num_questions}: {topic} - {question_type}")
+            
+            # Use appropriate prompt based on context
+            if prep_mode == "🎓 Academic Research Prep":
+                question = f"Generate a {difficulty.lower()} academic research question about {topic}. Focus on {question_type} aspects. Provide a detailed response that demonstrates deep understanding of research methodologies and academic rigor."
+            elif prep_mode == "🧠 Behavioral & Leadership Prep":
+                question = f"Create a {difficulty.lower()} behavioral or leadership scenario about {topic}. The question should assess {question_type}. Include a structured response that demonstrates leadership principles and emotional intelligence."
+            else:
+                question = generate_question(model, role_or_exam, topic, question_type, difficulty)
         
         questions.append({
             "topic": topic,
             "type": question_type,
             "difficulty": difficulty,
-            "question": question,
+            "question": question if isinstance(question, str) else str(question),
             "context": context,
+            "prep_mode": prep_mode if prep_mode else ("exam" if is_exam else "job_interview"),
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
         
@@ -794,7 +835,13 @@ def main():
         button_text = "🎲 Generate Certification Questions" if is_exam_mode else "🎲 Generate Interview Questions"
         if st.button(button_text, type="primary"):
             with st.spinner("Generating comprehensive question set..."):
-                questions = generate_comprehensive_question_set(model, selected_item, num_questions, is_exam_mode)
+                questions = generate_comprehensive_question_set(
+                    model=model,
+                    role_or_exam=selected_item,
+                    num_questions=num_questions,
+                    is_exam=is_exam_mode,
+                    prep_mode=prep_mode if 'prep_mode' in locals() else None
+                )
                 st.session_state.current_questions = questions
                 st.session_state.current_role = selected_item
                 st.session_state.is_exam_mode = is_exam_mode
