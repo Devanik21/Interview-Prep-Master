@@ -750,7 +750,7 @@ def main():
                 st.write("• 4-8 weeks preparation")
                 st.write("• Daily practice sessions")
                 st.write("• Weekly mock exams")
-                st.write("• Hands-on projects") Topic coverage
+                st.write("• Hands-on projects") #Topic coverage
             st.subheader("🎯 Topic Coverage")
             topic_counts = {}
             for q in st.session_state.current_questions:
