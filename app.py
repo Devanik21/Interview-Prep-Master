@@ -686,7 +686,7 @@ def main():
     # Main content
     col1, col2 = st.columns([2, 1])
     
-        with col1:
+            with col1:
         if is_exam_mode:
             st.header(f"📜 Exam Prep: {selected_item}")
             exam_info = FAMOUS_EXAMS[selected_item]["exam_info"]
@@ -694,7 +694,7 @@ def main():
             # Exam overview
             st.subheader("📋 Exam Overview")
             col_a, col_b, col_c = st.columns(3)
-            with col_a:
+    A        with col_a:
                 st.metric("Duration", exam_info['duration'])
             with col_b:
                 st.metric("Questions", exam_info['questions'])
@@ -762,7 +762,7 @@ def main():
                         # Create and display the download link
                         download_link = get_pdf_download_link(pdf_data, filename)
                         st.markdown(download_link, unsafe_allow_html=True)
-                        st.success("Your PDF is ready for download! Check the link above.")                    
+                        st.success("Your PDF is ready for download! Check the link above.")                                 
 
     
     
