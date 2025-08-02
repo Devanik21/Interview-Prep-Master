@@ -546,7 +546,7 @@ def main():
     
     # Preparation mode selection
     st.sidebar.header("🎯 Preparation Mode")
-    prep_mode = st.sidebar.radio(
+    prep_mode = st.sidebar.selectbox(
         "Choose your preparation focus:",
         ["🎤 Job Interview Prep", "📜 Certification Exam Prep"]
     )
