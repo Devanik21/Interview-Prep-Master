@@ -201,7 +201,7 @@ def initialize_session_state():
 def configure_gemini(api_key):
     try:
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-2.0-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         return model
     except Exception as e:
         st.error(f"Error configuring Gemini API: {str(e)}")
